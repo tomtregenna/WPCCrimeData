@@ -1,0 +1,93 @@
+﻿@using MoreLinq
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model HomeViewModel
+
+<div>
+
+    <p><strong>Data Last Updated: @Model.LastUpdatedStr</strong></p>
+
+    @if (Model.ShowSplash)
+    {
+        <p>Welcome, please use the form in the navigation bar to search for crimes.</p>
+    }
+    else
+    {
+        @if (Model.Errors != null)
+        {
+            @foreach (var error in Model.Errors)
+            {
+                <ul>
+                    <li style="color: red">@error</li>
+                </ul>               
+            }
+        }
+        else
+        {
+            @if (Model.Crimes.Count > 0)
+            {
+                <div class="accordion accordion-flush" id="crimeCategories">
+                    @foreach (var crimeCategory in Model.Crimes.Select(c => c.CrimeCategory).DistinctBy(cc => cc.URL))
+                    {
+                        var categoryCrimes = Model.Crimes.Where(c => c.CrimeCategory.URL == crimeCategory.URL);
+
+                        <div class="accordion-item">
+
+                            <h2 class="accordion-header" id="head-@crimeCategory.URL">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@crimeCategory.URL">
+                                    <strong>@crimeCategory.Name (@categoryCrimes.Count())</strong>
+                                </button>
+                            </h2>
+
+                            <div id="collapse-@crimeCategory.URL" class="accordion-collapse collapse" data-bs-parent="#crimeCategories">
+                                <div class="accordion-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Context</th>
+                                                <th scope="col">Street</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var c in categoryCrimes)
+                                            {
+                                                <tr>
+                                                    <th scope="row">
+                                                        @c.ID
+                                                    </th>
+                                                    <td>
+                                                        @c.Context
+                                                    </td>
+                                                    <td>
+                                                        @c.Location.Street.Name
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>There were no results.</p>
+            }           
+        }
+    }
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $(".accordion").accordion();
+    });
+
+</script>

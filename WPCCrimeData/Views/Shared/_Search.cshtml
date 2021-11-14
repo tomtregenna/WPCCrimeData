@@ -1,0 +1,27 @@
+﻿@model HomeViewModel
+    
+<form action="/" method="post">
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <input type="text" class="form-control" id="searchLat" name="lat" placeholder="Latitude">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" id="searchLng" name="lng" placeholder="Longitude">
+            </div>
+            <div class="col">
+                <select type="text" class="form-control" id="searchDate" name="mnt" placeholder="Month">
+                    @foreach (var date in Model.DateList)
+                    {
+                      <option value="@date.Date">@date.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </div>
+
+</form>
